@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>शादी का खाना — Hare Krishna Caterers</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;600&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Lato',sans-serif;background:#f0f6fa;color:#222;min-height:100vh}
+
+  /* NAV */
+  .nav{display:flex;background:#0d3b52;padding:10px 20px;gap:12px;position:sticky;top:0;z-index:100}
+  .nav-btn{padding:8px 20px;border-radius:6px;border:1px solid #2980b9;background:transparent;color:#85c1e9;cursor:pointer;font-size:14px;font-family:'Lato',sans-serif}
+  .nav-btn.active{background:#1a6b8a;color:#fff;border-color:#1a6b8a}
+
+  /* VIEWS */
+  .view{display:none}.view.active{display:block}
+
+  /* HEADER */
+  .header{text-align:center;padding:40px 20px 30px;background:linear-gradient(135deg,#0d3b52 0%,#1a6b8a 100%);color:#fff}
+  .header-decor{color:#aed6f1;font-size:18px;letter-spacing:8px;margin-bottom:8px}
+  .header-title{font-family:'Playfair Display',serif;font-size:42px;margin:0 0 8px;text-shadow:0 2px 8px rgba(0,0,0,.3);letter-spacing:2px}
+  .header-sub{font-size:16px;color:#aed6f1;margin:0 0 6px;letter-spacing:1px}
+  .header-note{font-size:14px;color:#d6eaf8}
+
+  /* CARDS */
+  .card{margin:14px 14px 0;background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(13,59,82,.08);border:1px solid #d6eaf8}
+  .section-label{margin:0 0 12px;color:#0d3b52;font-size:16px;font-family:'Playfair Display',serif}
+
+  /* INPUTS */
+  .input-row{display:flex;gap:12px;flex-wrap:wrap}
+  input[type=text],input[type=tel],textarea{flex:1;min-width:180px;padding:10px 14px;border:1px solid #aed6f1;border-radius:8px;font-size:14px;font-family:'Lato',sans-serif;outline:none;color:#0d3b52;width:100%}
+  textarea{resize:vertical}
+  input:focus,textarea:focus{border-color:#1a6b8a}
+
+  /* FILTER */
+  .filter-bar{display:flex;align-items:center;gap:8px;padding:12px 14px;flex-wrap:wrap}
+  .filter-label{font-size:13px;color:#5dade2;font-weight:600}
+  .filter-btn{padding:6px 14px;border:1px solid #aed6f1;border-radius:20px;background:#fff;cursor:pointer;font-size:12px;color:#1a6b8a;font-family:'Lato',sans-serif}
+  .filter-btn.active{background:#1a6b8a;color:#fff;border-color:#1a6b8a}
+  .sel-count{margin-left:auto;font-size:13px;color:#1a6b8a;font-weight:600}
+
+  /* CATEGORY */
+  .cat-card{margin:10px 14px 0;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(13,59,82,.06);border:1px solid #d6eaf8}
+  .cat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;background:linear-gradient(90deg,#f8fcff,#fff);border-bottom:1px solid #eaf4fb;user-select:none}
+  .cat-left{display:flex;align-items:center;gap:10px}
+  .cat-emoji{font-size:22px}
+  .cat-name{font-weight:700;color:#0d3b52;font-size:15px;font-family:'Playfair Display',serif}
+  .cat-note{font-size:12px;color:#5dade2}
+  .cat-right{display:flex;align-items:center;gap:10px}
+  .rel-badge{font-size:11px;color:#fff;padding:3px 10px;border-radius:12px;font-weight:600;white-space:nowrap}
+  .collapse-icon{font-size:20px;color:#1a6b8a;width:24px;text-align:center}
+
+  /* ITEM GRID */
+  .item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;padding:14px}
+  .item-card{border:1.5px solid #d6eaf8;border-radius:10px;padding:10px 12px;cursor:pointer;background:#fafcff;transition:all .15s}
+  .item-card:hover{border-color:#5dade2;background:#f0f8ff}
+  .item-card.selected{background:#e8f4fd;border-color:#1a6b8a;box-shadow:0 0 0 2px #aed6f1}
+  .item-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+  .item-name{font-size:13px;font-weight:600;color:#0d3b52;line-height:1.3}
+  .check-box{width:20px;height:20px;border:2px solid #aed6f1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;color:#fff;background:#fff;transition:.15s}
+  .item-card.selected .check-box{background:#1a6b8a;border-color:#1a6b8a}
+  .item-taste{font-size:11px;color:#5dade2;margin-bottom:4px}
+  .item-rel{font-size:11px;font-weight:600}
+
+  /* SUBMIT */
+  .submit-area{margin:20px 14px 0;text-align:center;padding-bottom:40px}
+  .submit-note{color:#1a6b8a;margin-bottom:12px;font-size:14px}
+  .submit-btn{background:linear-gradient(135deg,#0d3b52,#1a6b8a);color:#fff;border:none;padding:16px 48px;border-radius:30px;font-size:16px;cursor:pointer;font-family:'Playfair Display',serif;font-weight:600;box-shadow:0 4px 20px rgba(13,59,82,.3);letter-spacing:.5px}
+  .submit-btn:hover{opacity:.9}
+  .submit-btn:disabled{opacity:.6;cursor:not-allowed}
+
+  /* THANK YOU */
+  #thank-you{display:none;min-height:80vh;align-items:center;justify-content:center;padding:20px}
+  #thank-you.show{display:flex}
+  .ty-card{background:#fff;border-radius:20px;padding:50px 40px;text-align:center;box-shadow:0 8px 40px rgba(13,59,82,.12);border:1px solid #d6eaf8;max-width:480px}
+  .ty-emoji{font-size:64px;margin-bottom:16px}
+  .ty-title{font-family:'Playfair Display',serif;font-size:32px;color:#0d3b52;margin:0 0 12px}
+  .ty-msg{font-size:16px;color:#333;margin:0 0 10px}
+  .ty-note{font-size:14px;color:#5dade2;margin:0 0 24px}
+  .reset-btn{padding:10px 28px;background:#1a6b8a;color:#fff;border:none;border-radius:20px;cursor:pointer;font-family:'Lato',sans-serif;font-size:14px}
+
+  /* DASHBOARD */
+  .dashboard{max-width:900px;margin:0 auto;padding:20px 14px 40px}
+  .dash-header{background:linear-gradient(135deg,#0d3b52,#1a6b8a);border-radius:16px;padding:24px 28px;color:#fff;margin-bottom:20px}
+  .dash-title{font-family:'Playfair Display',serif;margin:0;font-size:24px;color:#fff}
+  .dash-sub{margin:4px 0 12px;color:#aed6f1;font-size:14px}
+  .dash-actions{display:flex;gap:10px}
+  .refresh-btn{padding:8px 18px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;cursor:pointer;font-size:13px}
+  .clear-btn{padding:8px 18px;background:rgba(231,76,60,.3);border:1px solid rgba(231,76,60,.5);border-radius:8px;color:#fff;cursor:pointer;font-size:13px}
+
+  .tab-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab-btn{padding:10px 22px;border:1px solid #aed6f1;border-radius:8px;background:#fff;cursor:pointer;font-size:14px;color:#1a6b8a;font-family:'Lato',sans-serif}
+  .tab-btn.active{background:#1a6b8a;color:#fff;border-color:#1a6b8a}
+  .tab-content{display:none}.tab-content.active{display:block}
+
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+  .stat-card{background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 12px rgba(13,59,82,.08);border:1px solid #d6eaf8}
+  .stat-num{font-size:40px;font-weight:700;color:#1a6b8a;font-family:'Playfair Display',serif}
+  .stat-lbl{font-size:13px;color:#5dade2;margin-top:4px}
+
+  .dash-section-title{color:#0d3b52;margin:24px 0 12px;font-size:16px;font-family:'Playfair Display',serif}
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:nowrap}
+  .bar-rank{width:30px;font-size:12px;color:#5dade2;flex-shrink:0}
+  .bar-label{width:200px;font-size:13px;color:#0d3b52;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar-track{flex:1;height:20px;background:#eaf4fb;border-radius:10px;overflow:hidden;min-width:60px}
+  .bar-fill{height:100%;border-radius:10px;transition:width .5s ease}
+  .bar-count{width:30px;text-align:right;font-size:13px;font-weight:700;color:#1a6b8a;flex-shrink:0}
+
+  .guest-row{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:12px;border:1px solid #d6eaf8;box-shadow:0 1px 6px rgba(13,59,82,.05)}
+  .guest-row-header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .guest-name{color:#0d3b52;font-size:15px;font-weight:700}
+  .guest-phone{font-size:13px;color:#5dade2}
+  .guest-time{font-size:11px;color:#aed6f1;margin-left:auto}
+  .guest-count{font-size:13px;background:#eaf4fb;color:#1a6b8a;padding:2px 10px;border-radius:12px}
+  .chip-wrap{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{background:#eaf4fb;color:#1a6b8a;padding:3px 10px;border-radius:20px;font-size:12px}
+  .chip.other{background:#ffeaa7;color:#333}
+
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(13,59,82,.08)}
+  th{background:#0d3b52;color:#fff;padding:12px 16px;text-align:left;font-size:13px;font-weight:600}
+  tr{border-bottom:1px solid #eaf4fb}
+  td{padding:10px 16px;font-size:13px;color:#333}
+
+  .empty{color:#aed6f1;text-align:center;padding:40px;font-size:15px}
+  .hidden{display:none!important}
+
+  /* CAT SELECTION BADGE */
+  .cat-sel-badge{font-size:11px;background:#1a6b8a;color:#fff;padding:3px 9px;border-radius:12px;font-weight:700;display:none}
+  .cat-sel-badge.visible{display:inline-block}
+
+  /* SHARE BUTTONS */
+  .share-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+  .share-btn{padding:10px 20px;border-radius:20px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+  .share-wa{background:#25D366;color:#fff}
+  .share-copy{background:#eaf4fb;color:#1a6b8a;border:1px solid #aed6f1}
+  .share-csv{background:#0d3b52;color:#fff}
+  .share-edit{background:#fff;color:#1a6b8a;border:1.5px solid #1a6b8a}
+
+  /* DASHBOARD SHARE */
+  .dash-share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .dash-share-btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+
+  /* TOAST */
+  #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(60px);background:#0d3b52;color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;opacity:0;transition:all .3s;z-index:999;pointer-events:none}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:600px){
+    .header-title{font-size:28px}
+    .stat-row{grid-template-columns:1fr}
+    .bar-label{width:120px}
+    .item-grid{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="switchView('form')">🍽 Menu Selection</button>
+  <button class="nav-btn" onclick="switchView('dash')">📊 Dashboard</button>
+</div>
+
+<!-- ═══════════════════════ GUEST FORM VIEW ═══════════════════════ -->
+<div id="view-form" class="view active">
+
+  <!-- Thank You Screen -->
+  <div id="thank-you">
+    <div class="ty-card">
+      <div class="ty-emoji">💍</div>
+      <h2 class="ty-title">Shubh Vivah!</h2>
+      <p class="ty-msg">Thank you, <strong id="ty-name"></strong>! Your food preferences have been saved.</p>
+      <p class="ty-note" id="ty-note"></p>
+      <div class="share-row">
+        <button class="share-btn share-edit" onclick="editSelections()">✏️ Edit My Selections</button>
+      </div>
+      <div style="margin-top:16px">
+        <button class="reset-btn" onclick="resetForm()">Submit Another Response</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div id="form-body">
+    <div class="header">
+      <div class="header-decor">✦ ✦ ✦</div>
+      <h1 class="header-title">शादी का खाना</h1>
+      <p class="header-sub">Hare Krishna Caterers &amp; Decorators</p>
+      <p class="header-note">Please select the dishes you'd love at our wedding</p>
+      <div class="header-decor" style="margin-top:12px">✦ ✦ ✦</div>
+    </div>
+
+    <div class="card">
+      <h3 class="section-label">👤 Your Details</h3>
+      <div class="input-row">
+        <input type="text" id="guest-name" placeholder="Your Name *"/>
+        <input type="tel" id="guest-phone" placeholder="Phone Number (optional)"/>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <span class="filter-label">Show:</span>
+      <button class="filter-btn active" onclick="setFilter('all',this)">All Categories</button>
+      <button class="filter-btn" onclick="setFilter('9',this)">Highly Recommended+</button>
+      <button class="filter-btn" onclick="setFilter('10',this)">Must Have Only</button>
+      <span class="sel-count" id="sel-count">0 selected</span>
+    </div>
+
+    <div id="menu-container"></div>
+
+    <div class="card" style="margin-top:14px">
+      <h3 class="section-label">🍽 Other Requests / Suggestions</h3>
+      <textarea id="others" placeholder="Any dish not in the menu? Dietary restrictions? Special requests?" rows="4"></textarea>
+    </div>
+
+    <div class="submit-area">
+      <p class="submit-note" id="submit-note">0 item(s) selected</p>
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">💌 Submit My Preferences</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DASHBOARD VIEW ═══════════════════════ -->
+<div id="view-dash" class="view">
+  <div class="dashboard">
+    <div class="dash-header">
+      <h2 class="dash-title">📊 Wedding Menu Dashboard</h2>
+      <p class="dash-sub" id="dash-sub">Loading...</p>
+      <div class="dash-actions">
+        <button class="refresh-btn" onclick="loadDashboard()">🔄 Refresh</button>
+        <button class="refresh-btn" onclick="exportDashboardCSV()">📥 Export All to Sheets</button>
+        <button class="refresh-btn" onclick="shareDashboardSummary()">📤 Share Summary</button>
+        <button class="clear-btn" onclick="clearAll()">🗑 Clear All</button>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('overview',this)">Overview</button>
+      <button class="tab-btn" onclick="switchTab('guests',this)">Guest List</button>
+      <button class="tab-btn" onclick="switchTab('items',this)">All Items</button>
+    </div>
+
+    <div id="tab-overview" class="tab-content active">
+      <div class="stat-row" id="stat-row"></div>
+      <h3 class="dash-section-title">🏆 Top 20 Most Popular Items</h3>
+      <div id="top-items"></div>
+      <h3 class="dash-section-title">📂 By Category</h3>
+      <div id="top-cats"></div>
+    </div>
+
+    <div id="tab-guests" class="tab-content">
+      <div id="guest-list"></div>
+    </div>
+
+    <div id="tab-items" class="tab-content">
+      <div id="all-items-table"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════ MENU DATA ═══════════
+const MENU = [
+  { id:"welcome_beverages", cat:"Welcome Beverages", emoji:"🥂", rel:10, note:"Served on arrival",
+    items:[
+      {n:"Mineral Water (Cool Cool)", t:"Refreshing, neutral", r:10},
+      {n:"Cola", t:"Sweet, fizzy", r:8},
+      {n:"Orange Soft Drink", t:"Sweet, citrusy, fizzy", r:8},
+      {n:"Lemon Soft Drink", t:"Tangy, fizzy", r:8},
+      {n:"Espresso Coffee", t:"Strong, bitter, hot", r:7},
+    ]},
+  { id:"soup", cat:"Soup Station", emoji:"🍲", rel:9, note:"Any Two",
+    items:[
+      {n:"Cream of Tomato", t:"Creamy, mildly tangy, warm", r:9},
+      {n:"Sweet Corn Soup", t:"Sweet, light, warm", r:9},
+      {n:"Veg. Hot 'n' Sour", t:"Spicy, tangy, hot", r:8},
+      {n:"Manchow Soup", t:"Spicy, savory, crunchy", r:8},
+    ]},
+  { id:"chaat", cat:"Chaat Ka Swad", emoji:"🌮", rel:10, note:"Any Ten — Star of every North Indian wedding!",
+    items:[
+      {n:"Gol Gappe (4 types, 4 waters)", t:"Sweet, spicy, tangy, crispy", r:10},
+      {n:"Gujiya Bhalla Papdi", t:"Sweet, tangy, soft", r:9},
+      {n:"Pav Bhaji", t:"Spicy, buttery, savory", r:9},
+      {n:"Aloo Tikki", t:"Crispy, spicy, savory", r:10},
+      {n:"Paneer Tikki", t:"Crispy, mild, creamy", r:9},
+      {n:"Matar Tikki", t:"Spicy, earthy, crispy", r:8},
+      {n:"Raj Kachori", t:"Sweet, spicy, tangy, crunchy", r:9},
+      {n:"Moong Dal Chilla", t:"Savory, light, earthy", r:8},
+      {n:"Matar Khomchaa with Kulcha", t:"Spicy, tangy, soft", r:9},
+      {n:"Aloo Chaat with Matar", t:"Tangy, spicy, savory", r:9},
+      {n:"Dry Fruit Chaat", t:"Sweet, tangy, rich", r:8},
+      {n:"Madhuban Vada", t:"Crispy, spicy, savory", r:8},
+      {n:"Moonglet", t:"Soft, savory, light", r:7},
+      {n:"Dal Muradabadi", t:"Spicy, earthy, tangy", r:8},
+      {n:"Kanji Vada", t:"Tangy, fermented, spicy", r:7},
+      {n:"Chowmein", t:"Savory, spicy, umami", r:7},
+      {n:"Cholay Chawal Palak (Kullad Wale)", t:"Spicy, earthy, hearty", r:9},
+      {n:"Ram Laddu", t:"Crispy, spicy, tangy", r:8},
+      {n:"Pan Patta Chaat", t:"Sweet, tangy, refreshing", r:8},
+      {n:"Khjoor Chaat", t:"Sweet, tangy, fruity", r:7},
+    ]},
+  { id:"grilled", cat:"Grilled Snacks (Starters)", emoji:"🔥", rel:10, note:"Any Four",
+    items:[
+      {n:"Haryali Paneer Tikka", t:"Smoky, herby, mildly spicy", r:10},
+      {n:"Kesari Paneer Tikka", t:"Smoky, mild, saffron-infused", r:9},
+      {n:"Malai Paneer Tikka", t:"Creamy, mild, smoky", r:10},
+      {n:"Tandoori Mushroom Tikka", t:"Smoky, earthy, spicy", r:9},
+      {n:"Afgani Chaap", t:"Creamy, rich, smoky", r:9},
+      {n:"Tandoori Masala Chaap", t:"Spicy, smoky, tangy", r:9},
+      {n:"Tandoori Stuff Potato", t:"Smoky, spicy, earthy", r:8},
+      {n:"Achari Tikka", t:"Tangy, spicy, pickled flavor", r:8},
+    ]},
+  { id:"chinese_starters", cat:"Chinese Snacks (Starters)", emoji:"🥢", rel:8, note:"Any Four",
+    items:[
+      {n:"Golden Fried Baby Corn", t:"Crispy, savory, light", r:8},
+      {n:"Chilli Manchurian", t:"Spicy, tangy, savory", r:9},
+      {n:"Chilli Honey Potato", t:"Sweet, spicy, crispy", r:9},
+      {n:"Chilli Gobhi", t:"Spicy, tangy, crunchy", r:8},
+      {n:"Chilli Potato", t:"Spicy, crispy, savory", r:9},
+      {n:"Chilli Paneer", t:"Spicy, tangy, soft", r:9},
+      {n:"Chinese Stick with Capsicum", t:"Crispy, spicy, savory", r:7},
+      {n:"Veg. Spring Roll", t:"Crispy, savory, mild", r:8},
+    ]},
+  { id:"indian_snacks", cat:"Indian Snacks", emoji:"🥟", rel:9, note:"Any Four",
+    items:[
+      {n:"Cocktail Samosa", t:"Crispy, spicy, savory", r:10},
+      {n:"French Fries", t:"Crispy, salty, mild", r:7},
+      {n:"Moong Dal Pakodi", t:"Crispy, spicy, savory", r:9},
+      {n:"Veg. Cutlet", t:"Crispy, mild, savory", r:8},
+      {n:"Cheese Ball Puffs", t:"Creamy, cheesy, mild", r:8},
+      {n:"Hara Bhara Kabab", t:"Mild, herby, earthy", r:9},
+    ]},
+  { id:"pizza", cat:"Pizza Stall", emoji:"🍕", rel:7, note:"Any Four",
+    items:[
+      {n:"Margherita Pizza", t:"Mild, cheesy, tangy", r:8},
+      {n:"Farm House Pizza", t:"Savory, mild, veggie-rich", r:7},
+      {n:"Peppy Paneer Pizza", t:"Spicy, cheesy, savory", r:8},
+      {n:"Spicy Tangy Pizza", t:"Spicy, tangy, bold", r:8},
+      {n:"Gourmet Pizza", t:"Rich, savory, refined", r:7},
+      {n:"Mexican Pizza", t:"Spicy, tangy, hearty", r:7},
+      {n:"Country Fresh Pizza", t:"Light, fresh, mild", r:7},
+      {n:"Cheese and Paneer Pizza", t:"Creamy, cheesy, mild", r:8},
+      {n:"Garlic Bread", t:"Garlicky, buttery, warm", r:8},
+      {n:"Golden Corn Pizza", t:"Sweet, cheesy, mild", r:7},
+    ]},
+  { id:"south_indian", cat:"South Indian", emoji:"🫓", rel:8,
+    items:[
+      {n:"Masala Dosa", t:"Crispy, spicy, tangy", r:9},
+      {n:"Plain Dosa", t:"Crispy, mild, tangy", r:8},
+      {n:"Paneer Dosa", t:"Crispy, creamy, mild", r:8},
+      {n:"Onion Dosa", t:"Crispy, savory, mild", r:8},
+      {n:"Sambhar", t:"Spicy, tangy, savory", r:9},
+      {n:"Idli", t:"Soft, mild, light", r:8},
+      {n:"Vada", t:"Crispy, savory, mild", r:8},
+      {n:"Nariyal Chutney", t:"Mild, coconutty, fresh", r:9},
+    ]},
+  { id:"main_course", cat:"Main Course — Khane ke Shaukeen", emoji:"🍛", rel:10, note:"Any Eight — Heart of the meal",
+    items:[
+      {n:"Paneer Butter Masala", t:"Rich, creamy, mildly spicy", r:10},
+      {n:"Malai Kofta", t:"Creamy, sweet-savory, rich", r:10},
+      {n:"Palak Corn", t:"Mild, earthy, creamy", r:8},
+      {n:"Veg. Jalfreqzi / Gobhi Masala", t:"Spicy, tangy, crunchy", r:9},
+      {n:"Pindi Channa", t:"Spicy, tangy, earthy", r:9},
+      {n:"Kadhi Pakoda", t:"Tangy, savory, warm", r:9},
+      {n:"Shahi Paneer", t:"Creamy, rich, mildly sweet", r:10},
+      {n:"Kadai Paneer", t:"Spicy, smoky, bold", r:10},
+      {n:"Paneer Lababdar", t:"Rich, smoky, spicy", r:9},
+      {n:"Paneer Do Pyaza", t:"Savory, tangy, caramelized", r:9},
+      {n:"Navratan Korma", t:"Mild, sweet-savory, creamy", r:9},
+      {n:"Mushroom Do Pyaza", t:"Earthy, savory, tangy", r:8},
+      {n:"Nargisi Kofta", t:"Rich, spicy, savory", r:8},
+      {n:"Palak Paneer", t:"Earthy, mild, creamy", r:10},
+      {n:"Dal Makhni", t:"Creamy, rich, smoky", r:10},
+      {n:"Stuff Tinda", t:"Spicy, savory, earthy", r:7},
+      {n:"Kurkuri Bhindi", t:"Crispy, spicy, tangy", r:9},
+    ]},
+  { id:"mughlai", cat:"Mughlai Khana", emoji:"👑", rel:9,
+    items:[
+      {n:"Mughlai Paneer", t:"Rich, creamy, mild", r:9},
+      {n:"Tawa Chaap", t:"Smoky, spicy, savory", r:9},
+      {n:"Veg. Biryani", t:"Aromatic, spiced, fluffy", r:10},
+      {n:"Rumali Roti", t:"Soft, mild, thin", r:9},
+      {n:"Veg. Anda Curry", t:"Spicy, savory, rich", r:8},
+      {n:"Mughlai Kathal", t:"Spicy, meaty-textured, rich", r:8},
+    ]},
+  { id:"punjab", cat:"Punjab Da Tadka", emoji:"🌾", rel:10, note:"Classic Punjabi flavors!",
+    items:[
+      {n:"Sarson Ka Saag", t:"Earthy, bitter-sweet, rich", r:10},
+      {n:"Makki Di Roti (with Gur Makhan)", t:"Earthy, sweet, buttery", r:10},
+      {n:"Amritsari Chole", t:"Spicy, tangy, hearty", r:10},
+      {n:"Stuff Kulcha", t:"Soft, savory, buttery", r:9},
+      {n:"Baingan Da Bharta", t:"Smoky, spicy, earthy", r:9},
+      {n:"Punjab Da Rajma", t:"Spicy, hearty, earthy", r:9},
+      {n:"Onion Di Chutney", t:"Pungent, tangy, spicy", r:8},
+      {n:"Paneer Bhujiya", t:"Spicy, crumbly, savory", r:9},
+      {n:"Mooli Di Chutney", t:"Pungent, tangy, fresh", r:7},
+    ]},
+  { id:"desi_rasoi", cat:"Desi Rasoi", emoji:"🥘", rel:9,
+    items:[
+      {n:"Dal Tadka (Arhar)", t:"Earthy, spiced, savory", r:10},
+      {n:"Dal Tadka (Urad Yellow)", t:"Earthy, mild, savory", r:9},
+      {n:"Aloo Methi / Gajar Matar", t:"Bitter-savory / Sweet-earthy", r:8},
+      {n:"Tawa Fulka", t:"Soft, mild, warm", r:9},
+    ]},
+  { id:"haridwari", cat:"Haridwari Khana", emoji:"🙏", rel:8,
+    items:[
+      {n:"Aloo Dum", t:"Spicy, earthy, rich", r:9},
+      {n:"Khatta Mitha Sitafal", t:"Sweet, tangy, fruity", r:7},
+      {n:"Methi Ki Chutney", t:"Bitter, tangy, spiced", r:7},
+      {n:"Meethi Savnth", t:"Sweet, tangy, tamarind", r:8},
+      {n:"Boondo Raita", t:"Mild, creamy, savory", r:8},
+      {n:"Kachori", t:"Crispy, spicy, savory", r:9},
+    ]},
+  { id:"tawa_sabzi", cat:"Tawa Sabzi (Live)", emoji:"🥦", rel:8, note:"Seasonal veggies cooked live",
+    items:[
+      {n:"Arbi Tawa Sabzi", t:"Earthy, spicy, crispy", r:8},
+      {n:"Baingan Tawa Sabzi", t:"Smoky, spicy, soft", r:8},
+      {n:"Bhindi Tawa Sabzi", t:"Crispy, savory, mild", r:9},
+      {n:"Kathal Tawa Sabzi", t:"Meaty-textured, spicy", r:8},
+      {n:"Karela Tawa Sabzi", t:"Bitter, spiced, earthy", r:6},
+      {n:"Kamal Kakdi Tawa Sabzi", t:"Mild, crunchy, earthy", r:7},
+      {n:"Stuff Tomato", t:"Tangy, spicy, soft", r:8},
+      {n:"Stuff Shimla Mirch", t:"Mild, savory, stuffed", r:8},
+    ]},
+  { id:"tawa_paratha", cat:"Tawa Paratha (Live)", emoji:"🫓", rel:9,
+    items:[
+      {n:"Aloo Paratha", t:"Spicy, earthy, buttery", r:10},
+      {n:"Gobhi Paratha", t:"Mild, earthy, savory", r:9},
+      {n:"Aloo Onion Paratha", t:"Spicy, savory, pungent", r:8},
+      {n:"Onion Paratha", t:"Pungent, savory, mild", r:8},
+      {n:"Mix Paratha", t:"Mixed flavors, hearty", r:8},
+      {n:"Paneer Paratha", t:"Creamy, mild, rich", r:9},
+    ]},
+  { id:"breads", cat:"Dostana-e-Tandoor (Breads)", emoji:"🫓", rel:10,
+    items:[
+      {n:"Stuff Naan", t:"Soft, savory, stuffed", r:9},
+      {n:"Lachha Paratha", t:"Flaky, buttery, mild", r:9},
+      {n:"Baby Naan", t:"Soft, mild, pillowy", r:8},
+      {n:"Butter Naan", t:"Soft, buttery, mild", r:10},
+      {n:"Tandoori Roti", t:"Earthy, mild, warm", r:9},
+      {n:"Missi Roti", t:"Spiced, earthy, nutty", r:8},
+    ]},
+  { id:"rice", cat:"Khushbu-e-Basmati (Rice)", emoji:"🍚", rel:10, note:"Any Two",
+    items:[
+      {n:"Steamed Rice", t:"Neutral, fluffy, mild", r:9},
+      {n:"Matar Paneer Pulao", t:"Aromatic, mild, savory", r:9},
+      {n:"Kesariya Pulao (Meetha)", t:"Sweet, saffron, aromatic", r:8},
+      {n:"Jeera Rice", t:"Mild, aromatic, savory", r:9},
+      {n:"Plain Rice", t:"Neutral, light, fluffy", r:8},
+    ]},
+  { id:"chinese_cuisine", cat:"Chinese Cuisine", emoji:"🥡", rel:7,
+    items:[
+      {n:"Veg. Manchurian", t:"Spicy, tangy, savory", r:8},
+      {n:"Spring Onion Fried Rice", t:"Savory, mild, aromatic", r:8},
+      {n:"Veg. Noodles Hakka Style", t:"Savory, spicy, umami", r:8},
+      {n:"Hot Garlic Sauce with Broccoli & Baby Corn", t:"Spicy, garlicky, savory", r:7},
+    ]},
+  { id:"raita", cat:"Raita Ka Bazar", emoji:"🥛", rel:9, note:"Any Two",
+    items:[
+      {n:"Pineapple Raita", t:"Sweet, creamy, fruity", r:8},
+      {n:"Pudina Raita", t:"Minty, cool, tangy", r:9},
+      {n:"Mix Veg. Raita", t:"Mild, creamy, savory", r:9},
+      {n:"Fruit Raita", t:"Sweet, creamy, fruity", r:8},
+      {n:"Dahi Bhalla", t:"Tangy, sweet, soft", r:9},
+      {n:"Plain Curd", t:"Mild, tangy, cool", r:9},
+    ]},
+  { id:"salad", cat:"Salad Bar", emoji:"🥗", rel:8,
+    items:[
+      {n:"Garden Fresh Salad", t:"Fresh, crunchy, light", r:9},
+      {n:"Russian Salad", t:"Creamy, mild, savory", r:8},
+      {n:"Laccha Onion", t:"Pungent, tangy, crunchy", r:8},
+      {n:"Cucumber Salad", t:"Fresh, cool, mild", r:9},
+      {n:"Boiled Channa", t:"Earthy, mild, savory", r:7},
+      {n:"Onion Vinegar", t:"Tangy, pungent, acidic", r:8},
+      {n:"Boiled Moong", t:"Mild, earthy, light", r:7},
+    ]},
+  { id:"papads", cat:"Hapur Famous Papads & Live Chutney", emoji:"🫙", rel:9,
+    items:[
+      {n:"Hapur Famous Papads (Various Tastes)", t:"Crispy, spiced, savory", r:9},
+      {n:"Live Chutney Silbatte Pe", t:"Fresh, tangy, spicy", r:10},
+    ]},
+  { id:"pasta_fruit", cat:"Pasta Counter & Fruit Stall", emoji:"🍝", rel:7,
+    items:[
+      {n:"Red Sauce Pasta", t:"Tangy, savory, mild", r:7},
+      {n:"White Sauce Pasta", t:"Creamy, mild, rich", r:7},
+      {n:"Imported Fruits (Any Five)", t:"Sweet, fresh, varied", r:8},
+      {n:"Indian Fruits (Any Five)", t:"Sweet, seasonal, fresh", r:8},
+    ]},
+  { id:"hot_desserts", cat:"Hot Desserts", emoji:"🍮", rel:10, note:"Any Four",
+    items:[
+      {n:"Gulab Jamun", t:"Sweet, soft, syrupy", r:10},
+      {n:"Malpua", t:"Sweet, soft, saffron", r:9},
+      {n:"Moong Dal Halwa", t:"Sweet, rich, ghee-laden", r:10},
+      {n:"Gajar Ka Halwa", t:"Sweet, warm, carroty", r:10},
+      {n:"Badam Ka Halwa", t:"Sweet, nutty, rich", r:9},
+      {n:"Akhrot Ka Halwa", t:"Sweet, nutty, warm", r:8},
+      {n:"Gajar Pak", t:"Sweet, dense, aromatic", r:8},
+      {n:"Urad Dal Halwa", t:"Sweet, rich, heavy", r:8},
+      {n:"Pineapple Halwa", t:"Sweet, fruity, tangy", r:7},
+      {n:"Chana Dal Halwa", t:"Sweet, earthy, rich", r:8},
+      {n:"Mix Dry Fruit Halwa", t:"Sweet, nutty, rich", r:9},
+      {n:"Ghevar", t:"Sweet, crispy, honeyed", r:9},
+      {n:"Kesariya Jalebi (Live)", t:"Sweet, crispy, saffron-syrupy", r:10},
+      {n:"Doodh Ki Khadai (Live)", t:"Sweet, creamy, milky", r:9},
+    ]},
+  { id:"cold_desserts", cat:"Cold Desserts", emoji:"🍨", rel:9, note:"Any Four",
+    items:[
+      {n:"Ras Malai", t:"Sweet, creamy, milky", r:10},
+      {n:"Raj Bhog", t:"Sweet, soft, saffron", r:9},
+      {n:"Bangali Sponge Rasgulla", t:"Sweet, spongy, light", r:9},
+      {n:"Fruit Cream", t:"Sweet, creamy, fruity", r:8},
+      {n:"Pineapple Kheer", t:"Sweet, fruity, creamy", r:8},
+      {n:"Gulab Kheer", t:"Sweet, floral, creamy", r:8},
+      {n:"Ras Madhuri", t:"Sweet, creamy, rich", r:8},
+      {n:"Malai Roll", t:"Sweet, creamy, soft", r:8},
+      {n:"Pineapple Roll", t:"Sweet, fruity, soft", r:7},
+    ]},
+  { id:"ice_cream", cat:"Ice Cream & Kids Counter", emoji:"🍦", rel:9,
+    items:[
+      {n:"Malai Kulfi Seekh Wali", t:"Sweet, creamy, cold", r:10},
+      {n:"Ice Cream (Amul)", t:"Sweet, cold, creamy", r:9},
+      {n:"Popcorn (Kids)", t:"Salty/sweet, crunchy", r:8},
+      {n:"Sugar Candy (Kids)", t:"Sweet, sugary", r:8},
+      {n:"Sweet Corn (Kids)", t:"Sweet, warm, buttery", r:8},
+    ]},
+  { id:"juices", cat:"Juices", emoji:"🧃", rel:8, note:"Any Two",
+    items:[
+      {n:"Mosambi Juice", t:"Tangy, sweet, citrusy", r:9},
+      {n:"Pineapple Juice", t:"Sweet, tangy, tropical", r:8},
+      {n:"Watermelon Juice", t:"Sweet, refreshing, light", r:9},
+      {n:"Orange Juice", t:"Sweet, citrusy, tangy", r:9},
+      {n:"Guava Juice", t:"Sweet, earthy, tropical", r:8},
+      {n:"Fruit Cocktail", t:"Sweet, mixed fruity", r:8},
+    ]},
+  { id:"mocktails", cat:"Mocktails", emoji:"🍹", rel:8, note:"Any Two",
+    items:[
+      {n:"Blue Crush", t:"Sweet, citrusy, refreshing", r:9},
+      {n:"Blue Ice Mountain", t:"Sweet, minty, cool", r:8},
+      {n:"Orange Mocktail", t:"Sweet, citrusy, tangy", r:8},
+      {n:"Green Mocktail", t:"Herby, refreshing, mild", r:8},
+      {n:"Pomegranate Spritzer", t:"Sweet, tangy, fizzy", r:9},
+      {n:"Cindrella", t:"Sweet, tropical, smooth", r:8},
+      {n:"Lemon Lavender", t:"Floral, tangy, refreshing", r:8},
+    ]},
+  { id:"shakes", cat:"Shakes", emoji:"🥤", rel:8, note:"Any Four",
+    items:[
+      {n:"Khajoor Shake", t:"Sweet, rich, nutty", r:9},
+      {n:"Chicku Shake", t:"Sweet, creamy, caramel-like", r:9},
+      {n:"Mango Shake", t:"Sweet, tropical, creamy", r:10},
+      {n:"Pineapple Shake", t:"Sweet, tangy, creamy", r:8},
+      {n:"Fruit Punch Shake", t:"Sweet, mixed fruity", r:8},
+      {n:"Strawberry Shake", t:"Sweet, fruity, creamy", r:9},
+      {n:"Chocolate Shake", t:"Sweet, chocolaty, rich", r:9},
+      {n:"Banana Shake", t:"Sweet, creamy, mild", r:8},
+    ]},
+  { id:"jal_jeera", cat:"Jal Jeera", emoji:"💧", rel:8, note:"Any Two",
+    items:[
+      {n:"Mango Panna", t:"Tangy, sweet, spiced", r:9},
+      {n:"Pineapple Panna", t:"Tangy, sweet, tropical", r:8},
+      {n:"Jal Jeera Veg.", t:"Tangy, spiced, refreshing", r:9},
+      {n:"Green Mango Panna", t:"Tangy, sour, spiced", r:8},
+      {n:"Virgin Mojito", t:"Minty, tangy, refreshing", r:9},
+      {n:"Soda Shikanju", t:"Tangy, fizzy, spiced lemon", r:8},
+    ]},
+  { id:"pheron", cat:"Pheron Ke Samay (Ceremony Bites)", emoji:"💍", rel:9, note:"Served during the wedding ceremony",
+    items:[
+      {n:"Water", t:"Neutral, refreshing", r:10},
+      {n:"Cold Drink", t:"Sweet, fizzy", r:8},
+      {n:"Espresso Coffee", t:"Strong, bitter, hot", r:7},
+      {n:"Roasted Badam", t:"Nutty, mild, crunchy", r:9},
+      {n:"Roasted Kaju", t:"Nutty, rich, crunchy", r:9},
+      {n:"Kaju Barfi", t:"Sweet, nutty, soft", r:10},
+      {n:"Kaju Katli", t:"Sweet, nutty, melt-in-mouth", r:10},
+      {n:"Cookies", t:"Sweet, buttery, crispy", r:8},
+    ]},
+  { id:"extra", cat:"Extra Counters", emoji:"✨", rel:8,
+    items:[
+      {n:"Coffee Hut", t:"Hot, aromatic, strong", r:8},
+      {n:"Ice Cream Parlor", t:"Sweet, cold, varied", r:9},
+      {n:"Bakery Counter", t:"Sweet/savory, varied", r:7},
+      {n:"Paan Counter", t:"Sweet, minty, aromatic", r:9},
+    ]},
+];
+
+// ═══════════ STATE ═══════════
+let selected = {}; // key: "catId::itemName"
+let currentFilter = 'all';
+let responses = [];
+
+// ═══════════ RELEVANCE HELPERS ═══════════
+function relColor(r){
+  if(r>=10) return '#1a6b8a';
+  if(r>=9)  return '#2980b9';
+  if(r>=8)  return '#5dade2';
+  if(r>=7)  return '#85c1e9';
+  return '#aed6f1';
+}
+function relLabel(r){
+  if(r>=10) return 'Must Have';
+  if(r>=9)  return 'Highly Recommended';
+  if(r>=8)  return 'Recommended';
+  if(r>=7)  return 'Good Choice';
+  return 'Optional';
+}
+
+// ═══════════ RENDER MENU ═══════════
+function renderMenu(){
+  const container = document.getElementById('menu-container');
+  container.innerHTML = '';
+  const filtered = currentFilter==='all' ? MENU : MENU.filter(c=>c.rel>=parseInt(currentFilter));
+
+  filtered.forEach(cat=>{
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+    card.id = 'cat-'+cat.id;
+
+    const isCollapsed = cat._collapsed || false;
+
+    card.innerHTML = `
+      <div class="cat-header" onclick="toggleCat('${cat.id}')">
+        <div class="cat-left">
+          <span class="cat-emoji">${cat.emoji}</span>
+          <div>
+            <span class="cat-name">${cat.cat}</span>
+            ${cat.note ? `<span class="cat-note"> — ${cat.note}</span>` : ''}
+          </div>
+        </div>
+        <div class="cat-right">
+          <span class="cat-sel-badge" id="cat-badge-${cat.id}"></span>
+          <span class="rel-badge" style="background:${relColor(cat.rel)}">${relLabel(cat.rel)} (${cat.rel}/10)</span>
+          <span class="collapse-icon" id="icon-${cat.id}">－</span>
+        </div>
+      </div>
+      <div class="item-grid" id="grid-${cat.id}">
+        ${cat.items.map(item=>{
+          const key = cat.id+'::'+item.n;
+          const sel = !!selected[key];
+          return `<div class="item-card${sel?' selected':''}" id="item-${CSS.escape(key)}" onclick="toggleItem('${cat.id}','${item.n.replace(/'/g,"\\'")}')">
+            <div class="item-top">
+              <span class="item-name">${item.n}</span>
+              <div class="check-box">${sel?'✓':''}</div>
+            </div>
+            <div class="item-taste">🌶 ${item.t}</div>
+            <div class="item-rel" style="color:${relColor(item.r)}">★ ${item.r}/10</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    container.appendChild(card);
+  });
+  updateSelCount();
+}
+
+function toggleCat(id){
+  const grid = document.getElementById('grid-'+id);
+  const icon = document.getElementById('icon-'+id);
+  const cat = MENU.find(c=>c.id===id);
+  cat._collapsed = !cat._collapsed;
+  grid.style.display = cat._collapsed ? 'none' : '';
+  icon.textContent = cat._collapsed ? '＋' : '－';
+}
+
+function toggleItem(catId, itemName){
+  const key = catId+'::'+itemName;
+  if(selected[key]) delete selected[key];
+  else selected[key] = itemName;
+
+  // Update card visually
+  const escapedKey = CSS.escape(key);
+  const card = document.getElementById('item-'+escapedKey);
+  if(card){
+    card.classList.toggle('selected', !!selected[key]);
+    card.querySelector('.check-box').textContent = selected[key] ? '✓' : '';
+  }
+  updateSelCount();
+}
+
+function updateSelCount(){
+  const n = Object.keys(selected).length;
+  document.getElementById('sel-count').textContent = n+' selected';
+  document.getElementById('submit-note').textContent = n+' item(s) selected';
+
+  // Update per-category badges
+  MENU.forEach(cat=>{
+    const badge = document.getElementById('cat-badge-'+cat.id);
+    if(!badge) return;
+    const catCount = Object.keys(selected).filter(k=>k.startsWith(cat.id+'::')).length;
+    if(catCount > 0){
+      badge.textContent = catCount+' selected';
+      badge.classList.add('visible');
+    } else {
+      badge.textContent = '';
+      badge.classList.remove('visible');
+    }
+  });
+}
+
+function setFilter(val, btn){
+  currentFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMenu();
+}
+
+// ═══════════ STORAGE ═══════════
+function saveResponse(entry){
+  try{
+    const key = 'rsvp_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    localStorage.setItem(key, JSON.stringify(entry));
+    return true;
+  }catch(e){ return false; }
+}
+
+function loadResponses(){
+  const res = [];
+  for(let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith('rsvp_')){
+      try{ res.push(JSON.parse(localStorage.getItem(k))); }catch{}
+    }
+  }
+  res.sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
+  return res;
+}
+
+function clearAllData(){
+  const keys = [];
+  for(let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith('rsvp_')) keys.push(k);
+  }
+  keys.forEach(k=>localStorage.removeItem(k));
+}
+
+// ═══════════ GOOGLE SHEETS CONFIG ═══════════
+// Paste your Apps Script Web App URL here after deploying:
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz4-sWht4vRzmA6ag74ejOsFpEuLRlU814jOD0vzeGs8CvNpNvaQtUwVW5MFgNVAoPHlQ/exec';
+
+async function sendToSheets(entry){
+  if(!SHEET_URL || SHEET_URL.startsWith('YOUR_')) return; // skip if not configured
+  try{
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors', // required for Apps Script
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    });
+  } catch(e){
+    console.warn('Sheets sync failed (non-blocking):', e.message);
+  }
+}
+
+// ═══════════ SUBMIT ═══════════
+async function submitForm(){
+  const name = document.getElementById('guest-name').value.trim();
+  if(!name){ alert('Please enter your name.'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+
+  const selections = Object.entries(selected).map(([key])=>{
+    const [catId, itemName] = key.split('::');
+    const cat = MENU.find(c=>c.id===catId);
+    return { category: cat ? cat.cat : catId, item: itemName };
+  });
+
+  const entry = {
+    name,
+    phone: document.getElementById('guest-phone').value.trim(),
+    selections,
+    others: document.getElementById('others').value.trim(),
+    timestamp: new Date().toISOString()
+  };
+
+  // Save locally (always works, even offline)
+  saveResponse(entry);
+
+  // Send to Google Sheets (non-blocking — won't break the form if it fails)
+  sendToSheets(entry);
+
+  // Show thank you
+  document.getElementById('form-body').style.display = 'none';
+  const ty = document.getElementById('thank-you');
+  ty.classList.add('show');
+  document.getElementById('ty-name').textContent = name;
+  document.getElementById('ty-note').textContent =
+    'You selected '+selections.length+' item(s). We look forward to celebrating with you!';
+}
+
+function resetForm(){
+  selected = {};
+  document.getElementById('guest-name').value = '';
+  document.getElementById('guest-phone').value = '';
+  document.getElementById('others').value = '';
+  document.getElementById('thank-you').classList.remove('show');
+  document.getElementById('form-body').style.display = '';
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = false;
+  btn.textContent = '💌 Submit My Preferences';
+  renderMenu();
+}
+
+// ═══════════ VIEW SWITCHING ═══════════
+function switchView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  event.target.classList.add('active');
+  if(v==='dash') loadDashboard();
+}
+
+// ═══════════ DASHBOARD ═══════════
+function switchTab(t, btn){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  btn.classList.add('active');
+}
+
+function loadDashboard(){
+  responses = loadResponses();
+  document.getElementById('dash-sub').textContent = responses.length+' guest response(s) collected';
+
+  // Aggregate
+  const itemCounts = {}, catCounts = {};
+  responses.forEach(r=>{
+    (r.selections||[]).forEach(s=>{
+      itemCounts[s.item] = (itemCounts[s.item]||0)+1;
+      catCounts[s.category] = (catCounts[s.category]||0)+1;
+    });
+  });
+
+  const totalSel = responses.reduce((a,r)=>a+(r.selections?.length||0),0);
+  const avgSel = responses.length ? Math.round(totalSel/responses.length) : 0;
+
+  // Stats
+  document.getElementById('stat-row').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${responses.length}</div><div class="stat-lbl">Guests Responded</div></div>
+    <div class="stat-card"><div class="stat-num">${Object.keys(itemCounts).length}</div><div class="stat-lbl">Unique Items Selected</div></div>
+    <div class="stat-card"><div class="stat-num">${avgSel}</div><div class="stat-lbl">Avg Selections / Guest</div></div>
+  `;
+
+  // Top items
+  const topItems = Object.entries(itemCounts).sort((a,b)=>b[1]-a[1]).slice(0,20);
+  const maxI = topItems[0]?.[1]||1;
+  document.getElementById('top-items').innerHTML = topItems.map(([item,count],i)=>`
+    <div class="bar-row">
+      <span class="bar-rank">#${i+1}</span>
+      <span class="bar-label" title="${item}">${item}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(count/maxI)*100}%;background:${i<3?'#1a6b8a':'#5dade2'}"></div></div>
+      <span class="bar-count">${count}</span>
+    </div>`).join('') || '<p class="empty">No data yet.</p>';
+
+  // Top cats
+  const topCats = Object.entries(catCounts).sort((a,b)=>b[1]-a[1]);
+  const maxC = topCats[0]?.[1]||1;
+  document.getElementById('top-cats').innerHTML = topCats.map(([cat,count])=>`
+    <div class="bar-row">
+      <span class="bar-label" style="width:220px" title="${cat}">${cat}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(count/maxC)*100}%;background:#2980b9"></div></div>
+      <span class="bar-count">${count}</span>
+    </div>`).join('') || '<p class="empty">No data yet.</p>';
+
+  // Guest list
+  document.getElementById('guest-list').innerHTML = responses.length
+    ? responses.map(r=>`
+      <div class="guest-row">
+        <div class="guest-row-header">
+          <span class="guest-name">${r.name}</span>
+          ${r.phone?`<span class="guest-phone">📞 ${r.phone}</span>`:''}
+          <span class="guest-time">${new Date(r.timestamp).toLocaleString()}</span>
+          <span class="guest-count">${r.selections?.length||0} items</span>
+        </div>
+        <div class="chip-wrap">
+          ${(r.selections||[]).map(s=>`<span class="chip">${s.item}</span>`).join('')}
+          ${r.others?`<span class="chip other">💬 ${r.others}</span>`:''}
+        </div>
+      </div>`).join('')
+    : '<p class="empty">No responses yet.</p>';
+
+  // All items table
+  const sorted = Object.entries(itemCounts).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('all-items-table').innerHTML = sorted.length
+    ? `<table>
+        <thead><tr><th>Item</th><th>Votes</th><th>% of Guests</th></tr></thead>
+        <tbody>${sorted.map(([item,count])=>`
+          <tr>
+            <td>${item}</td>
+            <td style="text-align:center;font-weight:700">${count}</td>
+            <td style="text-align:center">${responses.length?Math.round(count/responses.length*100):0}%</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`
+    : '<p class="empty">No data yet.</p>';
+}
+
+function clearAll(){
+  if(!confirm('Delete all responses? This cannot be undone.')) return;
+  clearAllData();
+  responses = [];
+  loadDashboard();
+}
+
+// ═══════════ TOAST ═══════════
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+// ═══════════ EDIT SELECTIONS ═══════════
+function editSelections(){
+  const ty = document.getElementById('thank-you');
+  ty.classList.remove('show');
+  document.getElementById('form-body').style.display = '';
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = false;
+  btn.textContent = '💌 Submit My Preferences';
+  renderMenu();
+  window.scrollTo({top:0, behavior:'smooth'});
+  showToast('✏️ Edit your selections and resubmit!');
+}
+
+// ═══════════ SHARE / EXPORT (Thank You) ═══════════
+function getLastEntry(){
+  const entries = loadResponses();
+  return entries[entries.length-1] || null;
+}
+
+// ═══════════ DASHBOARD EXPORT ═══════════
+function exportDashboardCSV(){
+  const all = loadResponses();
+  if(!all.length){ showToast('No responses to export.'); return; }
+  const rows = [['Guest Name','Phone','Category','Item','Timestamp']];
+  all.forEach(entry=>{
+    entry.selections.forEach(s=>{
+      rows.push([entry.name, entry.phone||'', s.category, s.item, entry.timestamp]);
+    });
+    if(entry.others) rows.push([entry.name, entry.phone||'', 'Other Requests', entry.others, entry.timestamp]);
+  });
+  triggerCSVDownload(rows, 'wedding-menu-all-guests.csv');
+  showToast('📥 CSV downloaded — open in Google Sheets!');
+}
+
+function shareDashboardSummary(){
+  const all = loadResponses();
+  if(!all.length){ showToast('No responses yet.'); return; }
+  const itemCounts = {};
+  all.forEach(r=>(r.selections||[]).forEach(s=>{ itemCounts[s.item]=(itemCounts[s.item]||0)+1; }));
+  const top10 = Object.entries(itemCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const lines = [`📊 Wedding Menu Dashboard — ${all.length} Guest(s)`, ``];
+  lines.push(`🏆 Top 10 Most Wanted Items:`);
+  top10.forEach(([item,count],i)=>lines.push(`${i+1}. ${item} (${count} vote${count>1?'s':''})`));
+  navigator.clipboard.writeText(lines.join('\n'))
+    .then(()=>showToast('📋 Dashboard summary copied!'))
+    .catch(()=>showToast('Could not copy — try again'));
+}
+
+function triggerCSVDownload(rows, filename){
+  const csv = rows.map(r=>r.map(cell=>`"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════ INIT ═══════════
+renderMenu();
+</script>
+</body>
+</html>
